@@ -555,7 +555,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 518277233}
-  - component: {fileID: 518277232}
   m_Layer: 0
   m_Name: Popcron.GizmosInstance
   m_TagString: Untagged
@@ -563,18 +562,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &518277232
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 518277231}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80b6a0da9107f164fb1f60c74620a27d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &518277233
 Transform:
   m_ObjectHideFlags: 3
@@ -1864,6 +1851,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: YBot
       objectReference: {fileID: 0}
+    - target: {fileID: 2870897554914645340, guid: 1fc50da8cb16b0444b0d8a83b60f5587, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3764143950409293486, guid: 1fc50da8cb16b0444b0d8a83b60f5587, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -1965,6 +1956,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: XBot
       objectReference: {fileID: 0}
+    - target: {fileID: 2144181722113377381, guid: e82bab3fcdb34bf4c88fc3dcfed97758, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e82bab3fcdb34bf4c88fc3dcfed97758, type: 3}
 --- !u!1001 &9175485137302456034
@@ -1974,6 +1969,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 9129641460306444119, guid: 5c7f0950aa535ce4faef155ad244c136, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 03f488460d0314e4ba4d5b1b80b2d8b3, type: 2}
     - target: {fileID: 9170567962484734475, guid: 5c7f0950aa535ce4faef155ad244c136, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -2021,6 +2020,10 @@ PrefabInstance:
     - target: {fileID: 9174020426781724515, guid: 5c7f0950aa535ce4faef155ad244c136, type: 3}
       propertyPath: m_Name
       value: SpiderOrange
+      objectReference: {fileID: 0}
+    - target: {fileID: 9174020426781724515, guid: 5c7f0950aa535ce4faef155ad244c136, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9175485137668518033, guid: 5c7f0950aa535ce4faef155ad244c136, type: 3}
       propertyPath: boneShape
