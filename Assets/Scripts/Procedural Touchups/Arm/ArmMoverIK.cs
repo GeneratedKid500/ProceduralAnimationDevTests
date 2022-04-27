@@ -131,7 +131,7 @@ public class ArmMoverIK : MonoBehaviour
 
     private void ArmIKAnimator(AvatarIKGoal arm)
     {
-        if (nearWall)
+        if (nearWall && ikActive)
         {
             // increases weight value if below target
             if (targetReachWeight > currentReachWeight)

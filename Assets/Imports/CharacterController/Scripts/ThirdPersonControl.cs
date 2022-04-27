@@ -47,18 +47,24 @@ public class ThirdPersonControl : MonoBehaviour
     private bool crouched;
     #endregion
 
+    [Header("Crouch Height")]
+    [SerializeField] float standCenter = -0.1364269f;
+    [SerializeField] float crouchCenter = -0.3126173f;
+
     #region Jumping Variables
     [Header("Jumping")]
     [SerializeField] float jumpForce = 220;
     [SerializeField] float fastFallMultiplier = 2.5f;
     [SerializeField] float lowJumpMultiplier = 2.5f;
     private bool grounded;
+    public bool Grounded { get { return grounded; } }
     [SerializeField] LayerMask groundedMask;
     #endregion
 
     #region Camera Variables
     [Header("Camera Rotation")]
     // cam follow
+    public float cameraOffset = 0.5f;
     [SerializeField] float camFollowSpeed = 0.2f;
     [SerializeField] float cameraLookSpeed = 2f;
     [SerializeField] float cameraPivotSpeed = 2f;
@@ -175,32 +181,31 @@ public class ThirdPersonControl : MonoBehaviour
     #region MOVEMENT & ROTATION
     void GetMoveInput()
     {
-        if (enableMovement)
+
+        vert = Input.GetAxisRaw("Vertical");
+        horz = Input.GetAxisRaw("Horizontal");
+
+        Vector3 moveDIR = cameraTransform.forward * vert;
+        moveDIR = moveDIR + cameraTransform.right * horz;
+        moveDIR.Normalize();
+        moveDIR.y = 0;
+
+        Vector3 targetMoveAmount = Vector3.zero;
+        if (grounded) // only check for speed change when on floor
         {
-            vert = Input.GetAxisRaw("Vertical");
-            horz = Input.GetAxisRaw("Horizontal");
-
-            Vector3 moveDIR = cameraTransform.forward * vert;
-            moveDIR = moveDIR + cameraTransform.right * horz;
-            moveDIR.Normalize();
-            moveDIR.y = 0;
-
-            Vector3 targetMoveAmount = Vector3.zero;
-            if (grounded) // only check for speed change when on floor
-            {
-                if (!isSprinting()) targetMoveAmount = moveDIR * walkSpeed;
-                else if (crouching) targetMoveAmount = moveDIR * (walkSpeed / sprintMultiplier);
-                else targetMoveAmount = moveDIR * (walkSpeed * sprintMultiplier);
-            }
-            else
-            {
-                if (!sprintOn) targetMoveAmount = moveDIR * walkSpeed;
-                else targetMoveAmount = moveDIR * (walkSpeed * sprintMultiplier);
-            }
-            moveAmount = Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
-            //calculates the player's move from current to wanted position via SmoothDamp to ensure smooth movement
-            //passes current velocity as a ref to ensure it gets updated
+            if (!enableMovement) targetMoveAmount = moveDIR * 0;
+            else if (!isSprinting()) targetMoveAmount = moveDIR * walkSpeed;
+            else if (crouching) targetMoveAmount = moveDIR * (walkSpeed / sprintMultiplier);
+            else targetMoveAmount = moveDIR * (walkSpeed * sprintMultiplier);
         }
+        else
+        {
+            if (!sprintOn) targetMoveAmount = moveDIR * walkSpeed;
+            else targetMoveAmount = moveDIR * (walkSpeed * sprintMultiplier);
+        }
+        moveAmount = Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
+        //calculates the player's move from current to wanted position via SmoothDamp to ensure smooth movement
+        //passes current velocity as a ref to ensure it gets updated
     }
 
     void RotateModel()
@@ -235,7 +240,7 @@ public class ThirdPersonControl : MonoBehaviour
         // cam follow
         if (enableCamera)
         {
-            Vector3 tp = new Vector3(transform.position.x, transform.position.y+0.5f, transform.position.z);
+            Vector3 tp = new Vector3(transform.position.x, transform.position.y + cameraOffset, transform.position.z);
             Vector3 targetPosition = Vector3.SmoothDamp(cameraMain.position, tp, ref cameraFollowVel, camFollowSpeed);
             cameraMain.position = targetPosition;
 
@@ -330,7 +335,7 @@ public class ThirdPersonControl : MonoBehaviour
                 //pCollider.height = 1.40444f; //lower height
                 pCollider.height = 1.212187f;
                 //pCollider.center = new Vector3(-0.006775737f, -0.2977802f, -1.192093e-07f);
-                pCollider.center = new Vector3(-0.006775737f, -0.3126173f, -1.192093e-07f);
+                pCollider.center = new Vector3(pCollider.center.x, crouchCenter, pCollider.center.z);
             }
             else
             {
@@ -341,7 +346,9 @@ public class ThirdPersonControl : MonoBehaviour
                 else
                 {
                     pCollider.height = standHeight; //upper height
-                    pCollider.center = new Vector3(-0.006775737f, -0.08124983f, -1.192093e-07f);
+                    pCollider.center = new Vector3(pCollider.center.x, standCenter, pCollider.center.z);                    
+                    
+                    //pCollider.center = new Vector3(pCollider.center.x, 0.8635731f, pCollider.center.z);
                 }
             }
 
@@ -412,7 +419,13 @@ public class ThirdPersonControl : MonoBehaviour
 
     bool isGrounded() //checks if grounded 
     {
-        if (Physics.SphereCast(transform.position, pCollider.radius, -transform.up, out RaycastHit Hit, 1 + .1f, groundedMask)) return true;
+        Vector3 positionStore = transform.position;
+        positionStore.y += 1;
+
+        if (Physics.Raycast(positionStore, -transform.up, out RaycastHit hit, 1.1f, groundedMask))
+        {
+            return true;
+        }
         else
         {
             crouched = false;
@@ -422,7 +435,10 @@ public class ThirdPersonControl : MonoBehaviour
 
     bool isAnythingAboveHead() // returns true if object is detected within x distance above player 
     {
-        if (Physics.SphereCast(transform.position, pCollider.radius, transform.up, out RaycastHit Hit, 0.5f)) return true;
+        Vector3 positionStore = transform.position;
+        positionStore.y += 1;
+
+        if (Physics.SphereCast(positionStore, pCollider.radius, transform.up, out RaycastHit Hit, 0.5f)) return true;
         else return false;
     }
 
@@ -492,7 +508,7 @@ public class ThirdPersonControl : MonoBehaviour
 
         float layerWeight = anim.GetLayerWeight(crouchLayerID);
         float incrementAmount = 0.05f;
-        if (crouching || crouched)
+        if ((crouching || crouched) && grounded)
         {
             if (layerWeight < 1)
             {
@@ -547,6 +563,20 @@ public class ThirdPersonControl : MonoBehaviour
     #endregion
 
     #region Application Management
+    public void EnableCharacter()
+    {
+        EnableMovement();
+        EnableCrouch();
+        EnableJump();
+    }
+
+    public void DisableCharacter()
+    {
+        DisableMovement();
+        DisableCrouch();
+        DisableJump();
+    }
+
     void SetBaseSystems()
     {
         baseSystems = new bool[5];

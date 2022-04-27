@@ -3,6 +3,8 @@ using UnityEngine;
 /// Used to manage, enable and disable all the IK functions of the player character from one place
 public class PlayerIKManager : MonoBehaviour
 {
+    private bool ikEnabled = true;
+
     private HeadLookAt hla;
     private ArmMoverIK[] armMovers;
     private FootIKPlacement footPlacer;
@@ -15,17 +17,32 @@ public class PlayerIKManager : MonoBehaviour
         SetNewFootPlacer();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            IKToggle();
+        }
+    }
+
+    public void IKToggle()
+    {
+        if (ikEnabled) DisableAllIK();
+        else EnableAllIK();
+    }
     public void EnableAllIK()
     {
         EnableHLA();
         EnableArmMovers();
         EnableFootPlacer();
+        ikEnabled = true;
     }
     public void DisableAllIK()
     {
         DisableHLA();
         DisableArmMovers();
         DisableFootPlacer();
+        ikEnabled = false;
     }
 
     #region Head Movement
@@ -42,6 +59,8 @@ public class PlayerIKManager : MonoBehaviour
     public ArmMoverIK GetArmMover(int id) { return armMovers[id]; }
     public void EnableArmMovers(int mover = -1)
     {
+        if (!ikEnabled) return;
+
         if (mover > 1) return;
 
         if (mover < 0)
