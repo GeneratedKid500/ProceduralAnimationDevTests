@@ -6,15 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/HumanoidScene.unity
+    path: Assets/ProceduralAnimationInVideoGameCharactersUnityPackageJoshuaC/ProceduralTouchUp/HumanoidScene.unity
     guid: b4b62592ac522dd4aae69734a14cef6b
   - enabled: 1
-    path: Assets/Scenes/RagdollScene.unity
+    path: Assets/ProceduralAnimationInVideoGameCharactersUnityPackageJoshuaC/Ragdoll/RagdollScene.unity
     guid: f73313ede560da8419b1b3fe00814952
   - enabled: 1
-    path: Assets/Scenes/SpiderWalkScene.unity
+    path: Assets/ProceduralAnimationInVideoGameCharactersUnityPackageJoshuaC/Spider-Bot/SpiderWalkScene.unity
     guid: 0676e7f659a82094c91fadf8129d3e21
-  - enabled: 1
-    path: Assets/Scenes/WalkSceneA.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}
